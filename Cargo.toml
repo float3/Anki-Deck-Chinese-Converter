@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 character_converter = "2.1.5"
+pinyin_zhuyin = "0.2.0"
