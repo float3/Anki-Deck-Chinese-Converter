@@ -13,7 +13,12 @@ fn main() {
         .split('\t')
         .map(|x| {
             if is_simplified(x) {
-                simplified_to_traditional(x).to_string()
+                let trad = simplified_to_traditional(x).to_string();
+                if trad != x {
+                    format!("{}/{}", x, trad)
+                } else {
+                    x.to_string()
+                }
             } else {
                 x.to_string()
             }
