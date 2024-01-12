@@ -1,8 +1,6 @@
 use character_converter::{is_simplified, simplified_to_traditional};
 use pinyin_zhuyin::pinyin_to_zhuyin;
-use std::borrow::Borrow;
 use std::env;
-use std::fmt::format;
 use std::io::{BufReader, Read};
 use std::{fs::File, io::Write};
 
