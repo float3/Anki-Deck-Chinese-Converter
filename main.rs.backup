@@ -1,0 +1,119 @@
+use character_converter::{is_simplified, simplified_to_traditional};
+<<<<<<< Updated upstream
+use pinyin_zhuyin::pinyin_to_zhuyin;
+=======
+use pinyin_zhuyin::{pinyin_to_zhuyin, zhuyin_to_pinyin};
+use std::borrow::{Cow, Borrow};
+>>>>>>> Stashed changes
+use std::env;
+use std::io::{BufReader, Read};
+use std::{fs::File, io::Write};
+
+// input args
+// 0
+// 1 input file
+// 2 output file
+// 3 simplified to traditional?
+// 4 pinyin to zhuyin?
+
+
+// TODO BUF WRITER
+// SPLIT N https://doc.rust-lang.org/stable/std/primitive.str.html#method.splitn
+
+fn main() {
+    let args = env::args().collect::<Vec<String>>();
+    let file = File::open(args.get(1).map(|z| z.as_str()).unwrap_or("test.txt"))
+        .expect("failed to open file");
+
+    let both = args.contains(&"both".to_string());
+    let zhuyin = !args.contains(&"no-zhuyin".to_string());
+    let trad = !args.contains(&"no-trad".to_string());
+
+    let mut buf_reader = BufReader::new(file.try_clone().unwrap());
+    let mut contents = String::new();
+    buf_reader.read_to_string(&mut contents).unwrap();
+<<<<<<< Updated upstream
+    contents = contents
+        .split('\t')
+        .map(|x| {
+            if is_simplified(x) && trad {
+                let trad = simplified_to_traditional(x).to_string();
+                if trad != x {
+                    formatwrapper(x, &trad, both)
+                } else {
+                    x.to_string()
+                }
+            } else {
+                x.to_string()
+            }
+        })
+        .map(|x| {
+            if zhuyin {
+                pinyin_to_zhuyin(&x)
+                    .map(|y| formatwrapper(&x, &y, both))
+                    .unwrap_or(x)
+            } else {
+                x
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\t");
+=======
+
+    let lines = contents.split('\n').collect::<Vec<_>>();
+    let mut newlines: Vec<String> = vec![];
+
+    for index in 0..lines.len() {
+        let line = lines[index];
+        if line.starts_with('#') {
+            newlines.push(line.to_string());
+            continue;
+        }
+
+        //let linesegments = line.split('\t').map(|x| Cow::Borrowed(x)).collect::<Vec<_>>();
+        let linesegments = line.split('\t').cloned().enumerate().map(|(idx,x)| {
+            match idx {
+                3 => simplified_to_traditional(x)
+                4 => zhuyin_to_pinyin(s)
+                _ => unreachable!()
+            }
+        }).collect::<Vec<_>>();
+
+
+        let trad: Cow<'_, str>;
+        if is_simplified(&linesegments[3]) {
+            trad = simplified_to_traditional(&linesegments[3]);
+        } else {
+            trad = Cow::Owned(linesegments[3].clone().into_owned());
+        } 
+        linesegments[3] = trad;
+
+        let zhuyin = match pinyin_to_zhuyin(linesegments[4]) {
+            Some(a) => a,
+            None => linesegments[4].to_string(),
+        };
+        linesegments[4] = Cow::Owned(zhuyin);
+
+        /*match pinyin_to_zhuyin(linesegments[4]) {
+            Some(a) => linesegments[4] = a.as_str(),
+            None => {} // Do nothing, leave linesegments[4] as it is
+        }*/
+
+        newlines.push(linesegments.join("\n"));
+    }
+
+>>>>>>> Stashed changes
+    let mut file = File::create("output.txt").unwrap();
+    let _ = file.write(contents.as_bytes());
+}
+
+fn formatwrapper<S>(a: S, b: S, c: bool) -> String
+where
+    S: AsRef<str>,
+{
+    if c {
+        format!("{}/{}", a.as_ref(), b.as_ref())
+    } else {
+        b.as_ref().to_string()
+    }
+}
