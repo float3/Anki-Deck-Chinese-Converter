@@ -41,7 +41,7 @@ fn main() -> anyhow::Result<()> {
 
     let mut out = File::create("output.txt")?;
     for line in preamble {
-        writeln!(out, "{}", line)?;
+        writeln!(out, "{line}")?;
     }
     out.write_all(&wtr.into_inner()?)?;
     Ok(())
@@ -51,12 +51,10 @@ fn transform(s: &str, both: bool, zhuyin: bool, trad: bool) -> String {
     let mut out = s.to_owned();
     if trad && is_simplified(s) {
         let t = simplified_to_traditional(s).to_string();
-        out = if both { format!("{}/{}", s, t) } else { t };
+        out = if both { format!("{s}/{t}") } else { t };
     }
-    if zhuyin {
-        if let Some(z) = pinyin_to_zhuyin(&out) {
-            out = if both { format!("{}/{}", out, z) } else { z };
-        }
+    if zhuyin && let Some(z) = pinyin_to_zhuyin(&out) {
+        out = if both { format!("{out}/{z}") } else { z };
     }
     out
 }
