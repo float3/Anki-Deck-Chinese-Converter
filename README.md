@@ -1,18 +1,13 @@
-# Anki Deck Translator Simplified to Traditional & Pinyin to Zhuyin 
+# Anki-Deck-Chinese-Converter
 
-## 简体->繁體
-## pīnyīn->ㄓㄨˋ ㄧㄣˉ
+Converts an exported Anki deck from Simplified to Traditional Chinese and from Pinyin to Zhuyin. Export the notes from Anki with tabs as separators.
 
-# Usage
-
-```
-cargo run "path/to/my/exported_notes.txt"
+```sh
+cargo run --release -- path/to/exported_notes.txt
 ```
 
-## possible arguments
+Optional flags after the path:
 
-`both` to print out both the original and the conversion, seperated by a / \
-`no-trad` to skip the trad step \
-`no-zhuyin` to skip the zhuyin step 
-
-make sure to export with tabs as seperators
+- `both` keep the original next to the conversion, separated by `/`
+- `no-trad` skip the Traditional step
+- `no-zhuyin` skip the Zhuyin step
