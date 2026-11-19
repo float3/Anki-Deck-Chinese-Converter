@@ -19,6 +19,8 @@
             # load external libraries that you need in your rust project here
           ];
       in {
+        formatter = pkgs.alejandra;
+
         devShells.default = pkgs.mkShell rec {
           nativeBuildInputs = [pkgs.pkg-config];
           buildInputs = with pkgs; [
